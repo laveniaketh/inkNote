@@ -18,10 +18,13 @@ li {
 body {
   font-family: "Montserrat";
 }
+h1 {
+  color: red;
+}
 h3 {
   /* font-family: serif; */
   font-weight: bold;
-  font-size: 2rem;
+  font-size: 1.8rem;
 }
 h4 {
   /* font-family: serif; */
@@ -31,10 +34,10 @@ h4 {
 p {
   font-size: 0.8rem;
 }
-.card-body {
+/* .card-body {
   height: 120px;
   overflow: hidden;
-}
+} */
 .wrapper {
   display: flex;
 }
@@ -43,6 +46,7 @@ p {
   flex-direction: column;
   min-height: 100vh;
   width: 100%;
+  /* background-color: red ; */
   /* transition: all 0.35s ease-in-out;
     background-color: #EEEEEE;
     min-width: 0;
@@ -58,16 +62,14 @@ p {
   left: 0px;
   width: 100%;
   height: 100vh;
-  z-index: 1;
+  z-index: 2;
   background: rgba(0, 0, 0, 0.1);
-  display:none;
+  display: none;
 }
-
 
 #sidebar {
   width: 70px;
   min-width: 70px;
-  z-index: 1000;
   transition: all 0.25s ease-in-out;
   background-color: #222222;
   display: flex;
@@ -76,9 +78,8 @@ p {
   top: 0;
   left: 0;
   height: 100%;
-  z-index: 2000;
   overflow: hidden;
-  z-index: 2;
+  z-index: 3;
 }
 #sidebar.expand {
   width: 260px;
@@ -142,12 +143,26 @@ dropdown-item i {
   font-size: 1.1rem;
   margin-right: 0.75rem;
 }
+a.sidebar-link {
+  transition: background-color 0.3s ease font-weight 0.3s ease;
+}
 
 a.sidebar-link:hover {
   background-color: rgba(255, 255, 255, 0.075);
   border-left: 3px solid #eeeeee;
 }
 a.sidebar-link:hover span {
+  font-weight: 600;
+}
+a.sidebar-link.selected {
+  background-color: #323232;
+  border-left: 3px solid #eeeeee;
+}
+a.sidebar-link.selected:hover {
+  background-color: rgba(255, 255, 255, 0.178);
+  border-left: 3px solid #eeeeee;
+}
+a.sidebar-link.selected:hover span {
   font-weight: 600;
 }
 
@@ -198,8 +213,6 @@ a.sidebar-link:hover span {
   transition: all 0.2s ease-out;
 }
 
-
-
 .hamburger-menu {
   display: none;
 }
@@ -210,15 +223,10 @@ a.sidebar-link:hover span {
   padding: 2px 3px;
 }
 
-
-
 /* NAV BAR STYLING */
 .navbar {
-  background-color: #222222;
-  color: #fff;
   padding: 0 1rem;
   box-shadow: 0 0 1rem 0 rgba(0, 0, 0, 0.1);
-  z-index: 1000;
   position: fixed;
   top: 0;
   left: 71px;
@@ -229,7 +237,8 @@ a.sidebar-link:hover span {
   padding: 0;
   align-items: center;
   transition: all 0.25s ease-in-out;
-  z-index: 0;
+  z-index: 1;
+  background-color: #fff;
 }
 
 /* USER MENU BAR STYLING */
@@ -237,7 +246,7 @@ a.sidebar-link:hover span {
   padding: 5px;
   border-radius: 50%;
   background-color: #fff;
-  transition: background-color .3s ease;
+  transition: background-color 0.3s ease;
 }
 .user-menu:hover {
   background-color: #dbdbdb;
@@ -247,16 +256,27 @@ a.sidebar-link:hover span {
   background-color: #dbdbdb;
 }
 
-.user-pic {
+.user-pic.menu {
   width: 40px;
   border-radius: 50%;
   cursor: pointer;
+  object-fit: cover;
+  width: 40px; /* Adjust as needed */
+  height: 40px; /* Adjust as needed */
+  border-radius: 50%;
+}
+
+.user-pic.profile {
+  object-fit: cover;
+  width: 40px; /* Adjust as needed */
+  height: 35px; /* Adjust as needed */
+  border-radius: 50%;
 }
 
 .sub-menu-wrap {
   position: absolute;
   top: 105%;
-  right: 12px;
+  right: 0.4%;
   width: 220px;
   max-height: 0px;
   transform: scale(0, 0);
@@ -291,9 +311,11 @@ a.sidebar-link:hover span {
   align-items: center;
   padding-left: 10px;
   margin: 1px 2px;
+  cursor: default;
   /* margin-bottom: 10px; */
 }
 .user-info h5 {
+  color: #eeeeee;
   font-weight: 500;
   font-size: 1.1rem;
   width: 100%;
@@ -323,6 +345,7 @@ a.sidebar-link:hover span {
   padding-left: 10px;
   transition: background-color 0.3s ease;
   border-left: 3px solid transparent;
+  cursor: pointer;
 }
 .sub-menu-link:hover {
   background-color: rgba(255, 255, 255, 0.075);
@@ -345,7 +368,6 @@ a.sidebar-link:hover span {
   justify-content: flex-start;
 }
 
-
 /* POPUP  STYLING*/
 /* body.darken-bg {
   opacity: 0.5;
@@ -364,9 +386,9 @@ body.darken-bg .popup * {
   left: 0px;
   width: 100%;
   height: 100vh;
-  z-index: 1;
+  z-index: 3;
   background: rgba(0, 0, 0, 0.7);
-  display:none;
+  display: none;
 }
 .popup {
   position: absolute;
@@ -377,7 +399,7 @@ body.darken-bg .popup * {
   height: 300px;
   background: #fff;
   border-radius: 10px;
-  z-index: 2;
+  z-index: 4;
   opacity: 0;
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
   transition: transform 300ms ease-in-out, opacity 300ms ease-in-out;
@@ -390,7 +412,60 @@ body.showLoginForm .popup {
   opacity: 1;
   transform: translate(-50%, -50%) scale(1);
 }
+
+.attachment-overlay {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100vh;
+  z-index: 3;
+  background: rgba(0, 0, 0, 0.7);
+  display: none;
+}
+
+.viewAttachments {
+  position: absolute;
+  top: -150%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(1.15);
+  max-width: 100%;
+  width: 500px;
+  height: 300px;
+  background: #fff;
+  border-radius: 10px;
+  z-index: 4;
+  opacity: 0;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  transition: transform 300ms ease-in-out, opacity 300ms ease-in-out;
+}
+
+body.showViewAttachments .attachment-overlay {
+  display: block;
+}
+body.showViewAttachments .viewAttachments {
+  top: 50%;
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
 .popup .popup-close {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  width: 40px;
+  height: 40px;
+  background: #222222;
+  color: #f5f5f5;
+  font-size: 25px;
+  font-weight: 600;
+  text-align: center;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.viewAttachments .attachment-close {
   position: absolute;
   top: -10px;
   right: -10px;
@@ -411,15 +486,85 @@ body.showLoginForm .popup {
   color: #f5f5f5;
   font-weight: 600;
 }
+
+.viewAttachments .attachment-close:hover {
+  background: #323232;
+  color: #f5f5f5;
+  font-weight: 600;
+}
+
 .popup .form .avatar {
   margin: 30px 0px 20px;
   text-align: center;
   cursor: pointer;
 }
+.viewAttachments.form .avatar {
+  margin: 30px 0px 20px;
+  text-align: center;
+  cursor: pointer;
+}
+
 
 .popup .form .avatar .avatar-wrapper {
   position: relative;
   display: inline-block;
+}
+
+.viewAttachments .avatar {
+  margin: 20px 0px 5px;
+  text-align: center;
+}
+
+.viewAttachments .avatar .avatar-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.viewAttachments .header {
+  text-align: center;
+  font-size: 20px;
+  font-weight: 600;
+  color: #222;
+  margin: 5px 0px;
+}
+
+.viewAttachments.element img.icons {
+  width: 24px;
+  height: 24px;
+}
+.viewAttachments .element {
+  padding: 8px 20px;
+}
+.image-container {
+  width: 100px; /* Adjust as needed */
+  height: 100px; /* Adjust as needed */
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.tag-name {
+  border: 2px solid #222222;
+  border-radius: 5px;
+  color: #222222;
+  padding: 5px 10px;
+  text-align: center;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  height: 30px; 
+  flex-wrap: nowrap;
+  margin: 2px;
+}
+
+.tag-container {
+	display: flex;
+  }
+
+#output {
+  object-fit: cover;
+  min-width: 100%;
+  min-height: 100%;
 }
 
 .popup .form .avatar .avatar-wrapper img {
@@ -433,10 +578,10 @@ body.showLoginForm .popup {
 .popup .form .avatar .avatar-wrapper::after {
   content: "";
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  top: 25%;
+  left: 25%;
+  width: 50%;
+  height: 50%;
   background: url("images/home-img/change-profile.svg") no-repeat center center;
   background-size: cover;
   opacity: 0;
@@ -490,11 +635,158 @@ body.showLoginForm .popup {
   border-radius: 5px;
   cursor: pointer;
 }
+.view-images{
+  display: flex;
+}
 
+.image-frame{
+  position: relative;
+  width: 23%;
+  padding-bottom: 23%; /* This makes the div a square */
+  overflow: hidden; /* This hides any part of the image that doesn't fit in the div */
+  border-radius: 10px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  margin: 0 5px;
+}
+
+.image-frame:hover {
+  transform: scale(1.01);
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.5);
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+.image-frame img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* This makes the image cover the entire area of the div */
+}
+
+/* SECTIONS STYLING */
+main {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  transition: all 0.35s ease-in-out;
+  min-width: 0;
+  margin: 0 10px 0 80px;
+
+  padding-top: 72px;
+  overflow: auto;
+  z-index: 0;
+}
+
+/* TIMELINE */
+
+.btn-group button {
+  background-color: #323232;
+  border-radius: 10px;
+}
+.card-body {
+  height: 120px;
+  overflow: hidden;
+  padding-bottom: 5px;
+}
+
+.card-body .sentiment {
+  height: 5rem;
+  max-width: 100%;
+  margin-right: 15px;
+}
+.attachments {
+  margin-left: 5px;
+}
+.attachments img {
+  width: 20px;
+  height: 20px;
+  margin: 0 2px;
+}
+.card {
+  background-color: #f5f5f5;
+  transition: 0.2s;
+  cursor: pointer;
+  color: #000;
+  margin-bottom: 1rem;
+  border-radius: 10px;
+  width: 100%;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+}
+.card:hover {
+  background-color: #222222;
+  color: #fff;
+  transform: translateY(-2.5px);
+}
+.card-content {
+  overflow: hidden;
+  max-height: 90px;
+}
+
+/* Entry View  */
+#content {
+  /* padding-top: 0; */
+  max-height: 100%;
+  height: 485px;
+  padding: 10px;
+  outline: none;
+  overflow: auto;
+  background-color: #252525;
+  color: #eeeeee;
+  width: 100%;
+  /* border: 2px solid #eee; */
+  /* border-radius: 10px; */
+}
+#content p {
+  margin: 5px;
+  font-size: 1rem;
+  overflow-wrap: break-word;
+}
+.sticker-tab {
+  /* padding: 10px; */
+  background: #252525;
+  height: 60px;
+  border-top: 2px solid #eee;
+
+  text-align: center;
+  /* display: flex; */
+}
+.sticker-tab img {
+  margin: auto 10px;
+  cursor: pointer;
+}
+.date {
+  /* background-color: #222222; */
+  color: #eee;
+  border: none;
+  text-align: center;
+  font-size: 1.5rem;
+  margin: auto auto auto 40%;
+}
+.back-button img {
+  width: 40px;
+}
+.back-button:hover img {
+  content: url("images/text-editor-img/back-hover.svg");
+}
+.edit-button img {
+  width: 35px;
+  margin-right: 5px;
+}
+.edit-button img:hover {
+  content: url("images/entry-view-img/edit-hover.svg");
+}
+
+.delete-button img {
+  width: 30px;
+}
+.delete-button img:hover {
+  content: url("images/entry-view-img/delete-hover.svg");
+}
 
 /* MEDIA */
 
-@media (max-width: 950px) {
+@media (max-width: 900px) {
   .popup {
     left: 49%;
   }
@@ -513,8 +805,31 @@ body.showLoginForm .popup {
   }
   .navbar {
     left: 0px;
+  }
+  /* main{
+    margin: 0 20px 0 20px;
+  } */
 
+  .sentiment {
+    width: 15vw;
   }
 
-}
+  .card-details {
+    font-size: 0.8rem;
+  }
+  .card-content p {
+    font-size: 0.8rem;
+  }
+  .attachments img {
+    /* width: 3vw; */
+  }
 
+  main {
+    margin: 0 20px 0 20px;
+  }
+}
+/* @media (min-height: 768px) {
+  #content {
+    height: 100vh; 
+  }
+} */
