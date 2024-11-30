@@ -727,7 +727,7 @@ main {
 #content {
   /* padding-top: 0; */
   max-height: 100%;
-  height: 485px;
+  height: 78vh;
   padding: 10px;
   outline: none;
   overflow: auto;
@@ -761,7 +761,7 @@ main {
   border: none;
   text-align: center;
   font-size: 1.5rem;
-  margin: auto auto auto 40%;
+  /* margin: auto auto auto 40%; */
 }
 .back-button img {
   width: 40px;
@@ -787,6 +787,10 @@ main {
 /* MEDIA */
 
 @media (max-width: 900px) {
+
+  .viewAttachments {
+    max-width: 80%;
+}
   .popup {
     left: 49%;
   }

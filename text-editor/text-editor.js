@@ -37,13 +37,12 @@ function setWordEditor() {
   });
 }
 
-const scontent = document.getElementById('content');
+const scontent = document.getElementById("content");
 
-scontent.addEventListener('keydown', function (event) {
-    
-    if (event.key === 'Backspace' && (this.textContent.trim() === '')) {
-        event.preventDefault();
-    }
+scontent.addEventListener("keydown", function (event) {
+  if (event.key === "Backspace" && this.textContent.trim() === "") {
+    event.preventDefault();
+  }
 });
 
 // Sentiment
@@ -86,11 +85,39 @@ function setSentiment() {
         lastClickedItem = this;
       }
     });
+
+    // Preselect the dropdown item based on the sentiment_id
+    if (typeof sentiment_id !== "undefined" && i == sentiment_id) {
+      console.log("sentiment_id: " + sentiment_id);
+      if (dropdownItems[i - 1]) {
+        dropdownItems[i - 1].classList.add("selected");
+        var dropdownItemImage =
+          dropdownItems[i - 1].querySelector(".dropdown-item img");
+        buttonImage.src = dropdownItemImage.src;
+        lastClickedItem = dropdownItems[i - 1];
+      } else {
+        console.error("Dropdown item " + (i - 1) + " is not defined");
+      }
+    }
   }
 }
 
-// Media
+var deletedPreAddImageIndices = [];
+
 function setMedia() {
+  // Pre-add images
+  if (typeof mediaContent !== "undefined" && mediaContent !== null) {
+    // Check if the pre-add images have already been added
+    if ($("#imageGallery div").length < mediaContent.length) {
+      for (var i = 0; i < mediaContent.length; i++) {
+        // Check if this pre-add image has been deleted
+        if (!deletedPreAddImageIndices.includes(i)) {
+          addImageToGallery(mediaContent[i], i);
+        }
+      }
+    }
+  }
+
   // Get the image upload input
   var imageUpload = document.getElementById("imageUpload");
   // Get the file name element
@@ -142,62 +169,7 @@ function setMedia() {
     var reader = new FileReader();
 
     reader.onloadend = function () {
-      var imgContainer = $("<div>").css({
-        width: "23%", // Adjust this value to change the size of the image container
-        paddingBottom: "23%", // This should be the same as the width to maintain a square aspect ratio
-        position: "relative",
-        overflow: "hidden",
-        "border-radius": "10px",
-        "box-shadow": "2px 2px 5px rgba(0, 0, 0, 0.3)",
-        margin: "1%", // Adjust this value to change the spacing between the images
-        float: "left", // This makes the images align horizontally
-      });
-
-      var img = $("<img>").attr("src", reader.result).css({
-        position: "absolute",
-        top: "0",
-        left: "0",
-        width: "100%",
-        height: "100%",
-        "object-fit": "cover",
-        "object-position": "center center",
-      });
-
-      var deleteButton = $("<button>").html("&times;").css({
-        position: "absolute",
-        top: "5px",
-        right: "10px",
-        background: "red",
-        color: "white",
-        border: "none",
-        "border-radius": "50%",
-        cursor: "pointer",
-        width: "20px",
-        height: "20px",
-        "font-size": "14px",
-        "text-align": "center",
-        "line-height": "1px",
-        "padding-right": "5px",
-        "font-weight": "600",
-        transition: "background 0.2s ease",
-      });
-
-      deleteButton.hover(
-        function () {
-          $(this).css("background", "#ff7f7f");
-        },
-        function () {
-          $(this).css("background", "red");
-        }
-      );
-
-      deleteButton.click(function () {
-        $(this).parent().remove();
-      });
-
-      imgContainer.append(img).append(deleteButton);
-
-      $("#imageGallery").append(imgContainer);
+      addImageToGallery(reader.result);
     };
 
     reader.readAsDataURL(file);
@@ -205,6 +177,80 @@ function setMedia() {
     closeUploadForm();
   });
 }
+
+function addImageToGallery(imageSrc, preAddImageIndex) {
+  var imgContainer = $("<div>").css({
+    width: "23%", // Adjust this value to change the size of the image container
+    paddingBottom: "23%", // This should be the same as the width to maintain a square aspect ratio
+    position: "relative",
+    overflow: "hidden",
+    "border-radius": "10px",
+    "box-shadow": "2px 2px 5px rgba(0, 0, 0, 0.3)",
+    margin: "1%", // Adjust this value to change the spacing between the images
+    float: "left", // This makes the images align horizontally
+  });
+
+  var img = $("<img>").attr("src", imageSrc).css({
+    position: "absolute",
+    top: "0",
+    left: "0",
+    width: "100%",
+    height: "100%",
+    "object-fit": "cover",
+    "object-position": "center center",
+  });
+
+  var deleteButton = $("<button>").html("&times;").css({
+    position: "absolute",
+    top: "5px",
+    right: "10px",
+    background: "red",
+    color: "white",
+    border: "none",
+    "border-radius": "50%",
+    cursor: "pointer",
+    width: "20px",
+    height: "20px",
+    "font-size": "14px",
+    "text-align": "center",
+    "line-height": "1px",
+    "padding-right": "5px",
+    "font-weight": "600",
+    transition: "background 0.2s ease",
+  });
+
+  deleteButton.hover(
+    function () {
+      $(this).css("background", "#ff7f7f");
+    },
+    function () {
+      $(this).css("background", "red");
+    }
+  );
+
+  deleteButton.click(function () {
+    var imgContainer = $(this).parent();
+    var preAddImageIndex = imgContainer.data("pre-add-image-index");
+
+    if (typeof preAddImageIndex !== "undefined") {
+      deletedPreAddImageIndices.push(preAddImageIndex);
+    }
+
+    imgContainer.remove();
+  });
+
+  // Add the pre-add image index to the image container as a data attribute
+  if (typeof preAddImageIndex !== "undefined") {
+    imgContainer.attr("data-pre-add-image-index", preAddImageIndex);
+  }
+
+  imgContainer.append(img).append(deleteButton);
+
+  $("#imageGallery").append(imgContainer);
+}
+
+// Call setMedia when the page loads
+$(document).ready(setMedia);
 
 // TAG
 function setTag() {
@@ -215,38 +261,64 @@ function setTag() {
     var tagName = $("#tagName").val().trim();
 
     if (tagName) {
-      var tagContainer = $("<span>").addClass("tag-container");
-
-      var tag = $("<span>").text(tagName).addClass("tag-name");
-
-      var deleteButton = $("<button>").html("&times;").addClass("delete-tag");
-
-      deleteButton.click(function () {
-        $(this).parent().remove();
-
-        // Check if there are any tags left after removing a tag
-        if ($("#tagContainer .tag-container").length === 0) {
-          // If there aren't, change the tag button image back to the original image
-          $(".tag-button img").attr("src", originalTagButtonImageSrc);
-        }
-      });
-
-      tagContainer.append(tag, deleteButton);
-
-      $("#tagContainer").append(tagContainer);
-
-      $("#tagName").val("");
-
-      // Check if there are any tags after adding a new tag
-      if ($("#tagContainer .tag-container").length > 0) {
-        // If there are, change the tag button image
-        $(".tag-button img").attr("src", newTagButtonImageSrc);
-      }
+      addTag(tagName);
     }
   });
+
+  // Function to add a tag
+  function addTag(tagName) {
+    // Check if a tag with the same name already exists
+    var existingTags = $("#tagContainer .tag-name")
+      .map(function () {
+        return $(this).text();
+      })
+      .get();
+
+    if (existingTags.includes(tagName)) {
+      // If it does, don't add the new tag and return early
+      return;
+    }
+    var tagContainer = $("<span>").addClass("tag-container");
+
+    var tag = $("<span>").text(tagName).addClass("tag-name");
+
+    var deleteButton = $("<button>").html("&times;").addClass("delete-tag");
+
+    deleteButton.click(function () {
+      $(this).parent().remove();
+
+      // Check if there are any tags left after removing a tag
+      if ($("#tagContainer .tag-container").length === 0) {
+        // If there aren't, change the tag button image back to the original image
+        $(".tag-button img").attr("src", originalTagButtonImageSrc);
+      }
+    });
+
+    tagContainer.append(tag, deleteButton);
+
+    $("#tagContainer").append(tagContainer);
+
+    $("#tagName").val("");
+
+    // Check if there are any tags after adding a new tag
+    if ($("#tagContainer .tag-container").length > 0) {
+      // If there are, change the tag button image
+      $(".tag-button img").attr("src", newTagButtonImageSrc);
+    }
+  }
+
+  // Pre-add tags from the tags array
+  if (typeof tags !== "undefined" && tags !== null) {
+    if (typeof tags === "string") {
+      tags = JSON.parse(tags);
+    }
+    for (var i = 0; i < tags.length; i++) {
+      addTag(tags[i]);
+    }
+  }
 }
 
-// Save to Database
+//Database
 function saveToDatabase() {
   // Get the content and date
   var content = $("#content").html();
@@ -263,9 +335,10 @@ function saveToDatabase() {
   ).map((tag) => tag.textContent);
 
   // Get the selected sentiment
-  var sentiment = Array.from(
-    document.querySelectorAll(".sentiment-dropdown .dropdown-item")
-  ).findIndex((item) => item.classList.contains("selected")) + 1;
+  var sentiment =
+    Array.from(
+      document.querySelectorAll(".sentiment-dropdown .dropdown-item")
+    ).findIndex((item) => item.classList.contains("selected")) + 1;
 
   // Create an object with the data
   var data = {
@@ -287,6 +360,77 @@ function saveToDatabase() {
 
   // Send a POST request with the data
   fetch("../crud/create.php", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.success) {
+        window.location.href = data.redirect; // Redirect to the URL returned by the server
+      } else {
+        console.error("Error:", data.error);
+      }
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
+}
+
+function updateToDatabase() {
+  // Get the content and date
+  var content = $("#content").html();
+  var dateInput = $("#preAddDate").text();
+
+  // Get the image data
+  // Get the image data from #imageGallery
+  var images = Array.from(document.querySelectorAll("#imageGallery img")).map(
+    (img) => img.src
+  );
+
+  // Get the tag names
+  var tags = Array.from(
+    document.querySelectorAll("#tagContainer .tag-name")
+  ).map((tag) => tag.textContent);
+
+  // Get the selected sentiment
+  var sentiment =
+    Array.from(
+      document.querySelectorAll(".sentiment-dropdown .dropdown-item")
+    ).findIndex((item) => item.classList.contains("selected")) + 1;
+
+  // Create an object with the data
+  var data = {
+    content: content,
+    dateInput: dateInput,
+    userId: userId,
+    entry_id: entryId, // Add the entry_id to the data
+    images: images,
+    tags: tags,
+  };
+  console.log(entryId);
+
+  // Conditionally add images, tags, and sentiment to data
+  // if (images.length > 0) {
+  //   console.log("naay image");
+  //   console.log("images:", images);
+  //   console.log(images.length);
+  //   data.images = images;
+  // }
+  // if (tags.length > 0) {
+  //   console.log('Tags:', tags);
+  //   console.log(tags.length);
+  //   data.tags = tags;
+  // }
+  if (sentiment > 0) {
+    data.sentiment = sentiment;
+    console.log("naay sentiment");
+  }
+
+  // Send a PUT request with the data
+  fetch("../crud/update.php", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

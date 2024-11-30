@@ -127,26 +127,7 @@
         displayEntries();
         ?>
 
-        <a id="myLink" href="home.php?entry=true">
-            <div class="card">
-                <div class="card-body py-3 d-flex align-items-start">
-                    <!-- <img src="images/text-editor-img/sentiments-svg/sentiments-colors/5-happy.svg" class="sentiment responsive-img"> -->
-                    <div class="card-content mb-3">
-                        <div class="d-flex align-items-center card-details">
-                            <h4>May 15, 2024</h4>
-                            <div class="d-flex align-items-center attachments">
-                                <img src="images/text-editor-img/tag.svg">
-                                <img src="images/text-editor-img/media.svg">
-                                <img src="images/text-editor-img/sentiment.svg">
-                            </div>
-                        </div>
-                        <p> hakdogggggggg
 
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </a>
 
         <!-- <a id="myLink" href="home.php?entry=true">
             <div class="card">

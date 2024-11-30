@@ -245,7 +245,7 @@ updateProfile();
             <a href="home.php" class="back-button"><img src="images/text-editor-img/back.svg"></a>
             <h4 class="date"><?php echo $formattedDate; ?></h4>
             <div>
-              <a href="#" class="edit-button"><img src="images/entry-view-img/edit.svg"></a>
+              <a href="text-editor/text-editor.php?entry_id=<?php echo $entry_id; ?>" class="edit-button" ><img src="images/entry-view-img/edit.svg"></a>
               <!-- <a href="#" class="delete-button"><img src="images/entry-view-img/delete.svg"></a> -->
               <a href="#" class="delete-button" onclick="deleteFromDatabase(<?php echo $entry_id; ?>)"><img src="images/entry-view-img/delete.svg"></a>
             </div>

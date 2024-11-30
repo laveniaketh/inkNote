@@ -31,9 +31,98 @@
 <body>
   <?php
   session_start();
+  // /Include your database connection file here
+  include '../database.php';
+  $user_id = $_SESSION['user_id'];
+
+  // Check if 'entry_id' exists in the URL parameters
+
+  if (isset($_GET['entry_id'])) {
+    // Extract 'entry_id' from the URL
+    $entry_id = $_GET['entry_id'];
+
+    // Prepare a SQL statement to select 'content', 'entry_date', and 'sentiment_id' from the 'entries' table
+    $stmt = $conn->prepare("SELECT content, entry_date, sentiment_id FROM entries WHERE entry_id = ?");
+    $stmt->bind_param("i", $entry_id);
+
+    // Execute the SQL statement
+    $stmt->execute();
+
+    // Get the result
+    $result = $stmt->get_result();
+
+    // Fetch the data
+    if ($row = $result->fetch_assoc()) {
+      // Decode the content
+      $content = base64_decode($row['content']);
+
+      // Format the date
+      $date = new DateTime($row['entry_date']);
+      $formattedDate = $date->format('F d, Y');
+
+      // URL encode the parameters
+      $encodedDate = urlencode($formattedDate);
+      $encodedContent = urlencode($content);
+
+      // Decode the URL parameters
+      $decodedDate = urldecode($encodedDate);
+      $decodedContent = urldecode($encodedContent);
+
+      // Get the sentiment_id
+      $sentiment_id = $row['sentiment_id'];
+
+      // Check if entry_id exists in tags table
+      $stmt = $conn->prepare("SELECT * FROM tags WHERE entry_id = ?");
+      $stmt->bind_param("i", $entry_id);
+      $stmt->execute();
+      $tagExists = $stmt->get_result()->num_rows > 0;
+
+      if ($tagExists) {
+        $stmt = $conn->prepare("SELECT tag FROM tags WHERE entry_id = ?");
+        $stmt->bind_param("i", $entry_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $tagsArray = array();
+        while ($row = $result->fetch_assoc()) {
+            $tagsArray[] = $row['tag'];
+        }
+        echo "<script>var tags = " . json_encode($tagsArray) . ";</script>";
+    }
+
+      // Check if entry_id exists in medias table
+      $stmt = $conn->prepare("SELECT * FROM medias WHERE entry_id = ?");
+      $stmt->bind_param("i", $entry_id);
+      $stmt->execute();
+      $mediaExists = $stmt->get_result()->num_rows > 0;
+
+      if ($mediaExists) {
+        $stmt = $conn->prepare("SELECT media_content FROM medias WHERE entry_id = ?");
+        $stmt->bind_param("i", $entry_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $mediaContentArray = array();
+        while ($row = $result->fetch_assoc()) {
+            $mediaContentArray[] = $row['media_content'];
+        }
+        echo "<script>var mediaContent = " . json_encode($mediaContentArray) . ";</script>";
+    }
+
+    }
+
+    // Close the statement
+    $stmt->close();
+  }
+  // Close the database connection
+  $conn->close();
   ?>
   <div class="container-fluid">
-    <h4 class="date"><input type="text" id="dateInput"></h4>
+    <?php
+    if (isset($_GET['entry_id'])) {
+      echo "<h4 class='date' id='preAddDate'>$formattedDate</h4>";
+    } else {
+      echo "<h4 class='date'><input type='text' id='dateInput'></h4>";
+    }
+    ?>
     <div class="toolbar">
       <div class="head">
         <a href="../home.php" class="back-button"><img src="../images/text-editor-img/back.svg"></a>
@@ -50,13 +139,20 @@
           <button onclick="formatDoc('justifyFull')"><i class='bx bx-align-justify' style='color:#eeeeee'></i></button>
           <button onclick="formatDoc('insertOrderedList')"><i class='bx bx-list-ol' style='color:#eeeeee'></i></button>
           <button onclick="formatDoc('insertUnorderedList')"><i class='bx bx-list-ul' style='color:#eeeeee'></i></button>
-          <button id="show-code" data-active="false">code</button>
+          <!-- <button id="show-code" data-active="false">code</button> -->
         </div>
-        <a href="#" class="save-button" id="store-html" onclick="saveToDatabase()"><img src="../images/text-editor-img/save.svg"></a>
+        <!-- <a href="#" class="save-button" id="store-html" onclick="saveToDatabase()"><img src="../images/text-editor-img/save.svg"></a> -->
+        <a href="#" class="save-button" id="store-html" onclick="<?php echo isset($_GET['entry_id']) ? 'updateToDatabase()' : 'saveToDatabase()'; ?>"><img src="../images/text-editor-img/save.svg"></a>
       </div>
     </div>
     <div id="content" contenteditable="true" spellcheck="false">
-      <p>start writing here</p>
+      <?php
+      if (isset($_GET['entry_id'])) {
+        echo $decodedContent;
+      } else {
+        echo " <p>start writing here</p>";
+      }
+      ?>
     </div>
   </div>
 
@@ -93,10 +189,10 @@
           <button id="addTag" class="btn btn-dark" onclick="setTag();">+</button>
         </div>
         <div class="scroll-tag">
-        <div id="tagContainer">
+          <div id="tagContainer">
+          </div>
         </div>
-        </div>
-        
+
 
       </div>
     </div>
@@ -227,6 +323,10 @@
 
   <script>
     var userId = "<?php echo $_SESSION['user_id']; ?>";
+    <?php if (isset($_GET['entry_id'])) : ?>
+      var sentiment_id = "<?php echo $sentiment_id; ?>";
+      var entryId = "<?php echo $entry_id; ?>";
+    <?php endif; ?>
   </script>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
